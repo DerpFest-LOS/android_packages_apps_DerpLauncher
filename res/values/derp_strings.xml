@@ -27,6 +27,7 @@
     <string name="misc_category_summary">Other options</string>
     <string name="general_category_title">General</string>
     <string name="interface_category_title">Interface</string>
+    <string name="quickspace_category_title">Quickspace</string>
     <string name="search_bar_category_title">Search bar</string>
     <string name="actions_category_title">Quick actions</string>
 
@@ -217,4 +218,9 @@
 
     <!-- A widget category label for grouping widgets related to weather. [CHAR_LIMIT=30] -->
     <string name="widget_category_weather">Weather</string>
+
+    <!-- QuickSpace -->
+    <string name="show_quickspace_title">At A Glance</string>
+    <string name="show_quickspace_summary">Show at the top of your Home screen</string>
+    <string name="abbrev_wday_month_day_no_year" translatable="false">EEEEMMMd</string>
 </resources>

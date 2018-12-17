@@ -50,7 +50,7 @@ public final class FeatureFlags {
      * @deprecated Use {@link BuildConfig#QSB_ON_FIRST_SCREEN} directly
      */
     @Deprecated
-    public static final boolean QSB_ON_FIRST_SCREEN = BuildConfig.QSB_ON_FIRST_SCREEN;
+    public static final boolean USE_QUICKSPACE_VIEW = true;
 
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
@@ -93,19 +93,7 @@ public final class FeatureFlags {
             DISABLED, "Sends a notification whenever launcher encounters an uncaught exception.");
 
     public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
-            enableTaskbarNavbarUnification() && (!isPhone() || enableTaskbarOnPhones());
-
-    private static boolean isPhone() {
-        final boolean isPhone;
-        int foldedDeviceStatesId = Resources.getSystem().getIdentifier(
-                "config_foldedDeviceStates", "array", "android");
-        if (foldedDeviceStatesId != 0) {
-            isPhone = Resources.getSystem().getIntArray(foldedDeviceStatesId).length == 0;
-        } else {
-            isPhone = true;
-        }
-        return isPhone;
-    }
+            enableTaskbarNavbarUnification() && enableTaskbarOnPhones();
 
     // Aconfig migration complete for ENABLE_TASKBAR_NO_RECREATION.
     public static final BooleanFlag ENABLE_TASKBAR_NO_RECREATION = getDebugFlag(299193589,

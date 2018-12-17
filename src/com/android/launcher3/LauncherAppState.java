@@ -42,6 +42,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ArchiveCompatibilityParams;
+import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.util.Log;
 import android.widget.Toast;
@@ -98,6 +99,7 @@ public class LauncherAppState implements SafeCloseable {
     private boolean mIsSafeModeEnabled;
 
     private final RunnableList mOnTerminateCallback = new RunnableList();
+    private boolean mIsCalendarAppAvailable;
 
     private boolean mNeedsRestart;
 
@@ -160,23 +162,6 @@ public class LauncherAppState implements SafeCloseable {
         SafeCloseable userChangeListener = UserCache.INSTANCE.get(mContext)
                 .addUserEventListener(mModel::onUserEvent);
         mOnTerminateCallback.add(userChangeListener::close);
-
-        if (enableSmartspaceRemovalToggle()) {
-            OnSharedPreferenceChangeListener firstPagePinnedItemListener =
-                    new OnSharedPreferenceChangeListener() {
-                        @Override
-                        public void onSharedPreferenceChanged(
-                                SharedPreferences sharedPreferences, String key) {
-                            if (SMARTSPACE_ON_HOME_SCREEN.equals(key)) {
-                                mModel.forceReload();
-                            }
-                        }
-                    };
-            LauncherPrefs.getPrefs(mContext).registerOnSharedPreferenceChangeListener(
-                    firstPagePinnedItemListener);
-            mOnTerminateCallback.add(() -> LauncherPrefs.getPrefs(mContext)
-                    .unregisterOnSharedPreferenceChangeListener(firstPagePinnedItemListener));
-        }
 
         LockedUserState.get(context).runOnUserUnlocked(() -> {
             CustomWidgetManager cwm = CustomWidgetManager.INSTANCE.get(mContext);
@@ -355,5 +340,16 @@ public class LauncherAppState implements SafeCloseable {
                         + LauncherPrefs.get(mContext).get(DB_FILE));
             }
         }
+    }
+    public static boolean isGSAEnabled(Context context) {
+        try {
+            return context.getPackageManager().getApplicationInfo("com.google.android.calendar", 0).enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    public boolean isCalendarAppAvailable() {
+        return mIsCalendarAppAvailable;
     }
 }

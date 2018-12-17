@@ -140,6 +140,8 @@ public final class Utilities {
 
     private static final long WAIT_BEFORE_RESTART = 100; // ms
 
+    public static final String DESKTOP_SHOW_QUICKSPACE = "pref_show_quickspace";
+
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
      */
@@ -1114,6 +1116,11 @@ public final class Utilities {
     public static boolean enableAutoIme(Context context) {
         SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
         return prefs.getBoolean(KEY_AUTO_KEYABORD, false);
+    }
+
+    public static boolean showQuickspace(Context context) {
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
+        return prefs.getBoolean(DESKTOP_SHOW_QUICKSPACE, true);
     }
 
     public static boolean startContextualSearch(Context context, int entrypoint) {
