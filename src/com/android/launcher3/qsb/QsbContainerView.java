@@ -291,8 +291,7 @@ public class QsbContainerView extends FrameLayout {
         }
 
         public boolean isQsbEnabled() {
-            return FeatureFlags.QSB_ON_FIRST_SCREEN
-                    && !SHOULD_SHOW_FIRST_PAGE_WIDGET;
+            return false; //FeatureFlags.QSB_ON_FIRST_SCREEN replaced by QuickSpace
         }
 
         protected Bundle createBindOptions() {
