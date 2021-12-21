@@ -221,6 +221,7 @@ import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.quickspace.QuickSpaceView;
+import com.android.launcher3.quickspace.SmartSpaceData;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -602,6 +603,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         final SettingsCache settingsCache = SettingsCache.INSTANCE.get(this);
         settingsCache.register(TOUCHPAD_NATURAL_SCROLLING, mNaturalScrollingChangedListener);
         mIsNaturalScrollingEnabled = settingsCache.getValue(TOUCHPAD_NATURAL_SCROLLING);
+
+        // Listen for broadcasts
+        registerReceiver(mSmartSpaceUpdatedReceiver, new IntentFilter(SmartSpaceData.ACTION_REFRESH));
 
         // Listen for screen turning off
         ScreenOnTracker.INSTANCE.get(this).addListener(mScreenOnListener);
@@ -1687,6 +1691,15 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private final ScreenOnListener mScreenOnListener = this::onScreenOnChanged;
 
+    private final BroadcastReceiver mSmartSpaceUpdatedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mQuickSpace != null && mQuickSpace.isAttachedToWindow()) {
+                mQuickSpace.onDataUpdated();
+            }
+        }
+    };
+
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
         mAppsView.getAppsStore().updateNotificationDots(updatedDots);
@@ -1887,6 +1900,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         SettingsCache.INSTANCE.get(this).unregister(TOUCHPAD_NATURAL_SCROLLING,
                 mNaturalScrollingChangedListener);
         ScreenOnTracker.INSTANCE.get(this).removeListener(mScreenOnListener);
+        unregisterReceiver(mSmartSpaceUpdatedReceiver);
         mWorkspace.removeFolderListeners();
         PluginManagerWrapper.INSTANCE.get(this).removePluginListener(this);
 
