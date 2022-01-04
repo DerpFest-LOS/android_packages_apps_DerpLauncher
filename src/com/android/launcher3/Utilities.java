@@ -1129,6 +1129,16 @@ public final class Utilities {
         return prefs.getBoolean(KEY_SHOW_QUICKSPACE_NOWPLAYING, true);
     }
 
+    public static int getSeraphixHolderId(Context context) {
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
+        return prefs.getInt("seraphix_holder_id", -1);
+    }
+
+    public static void setSeraphixHolderId(Context context, int newId) {
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
+        prefs.edit().putInt("seraphix_holder_id", newId).apply();
+    }
+
     public static boolean startContextualSearch(Context context, int entrypoint) {
         Context appContext = context.getApplicationContext();
         ContextualSearchManager contextualSearchManager = 

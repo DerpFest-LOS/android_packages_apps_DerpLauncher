@@ -18,6 +18,7 @@ package com.android.launcher3.quickspace;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.media.AudioManager;
@@ -61,6 +62,9 @@ public class QuickspaceController implements NotificationListener.NotificationsC
     private boolean mClientLost = true;
     private boolean mMediaActive = false;
 
+    private String weatherText = "";
+    private Icon weatherIcon;
+
     public interface OnDataListener {
         void onDataUpdated();
     }
@@ -100,15 +104,16 @@ public class QuickspaceController implements NotificationListener.NotificationsC
     }
 
     public boolean isWeatherAvailable() {
-        return false;
+        return !weatherText.isEmpty() && weatherIcon != null;
     }
 
     public Icon getWeatherIcon() {
-        return Icon.createWithResource(mContext, R.drawable.ic_warning);
+        return weatherIcon != null ? weatherIcon :
+            Icon.createWithResource(mContext, R.drawable.ic_warning);
     }
 
     public String getWeatherTemp() {
-        return "";
+        return weatherText;
     }
 
     private void playbackStateUpdate(int state) {
@@ -201,6 +206,12 @@ public class QuickspaceController implements NotificationListener.NotificationsC
                 }
             }
         });
+    }
+
+    public void updateWeatherData(String text, Bitmap image) {
+        weatherText = text;
+        weatherIcon = image == null ? null : Icon.createWithBitmap(image);
+        updateWeather();
     }
 
    private RemoteController.OnClientUpdateListener mRCClientUpdateListener =
