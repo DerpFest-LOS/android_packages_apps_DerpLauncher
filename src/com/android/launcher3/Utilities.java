@@ -148,6 +148,7 @@ public final class Utilities {
 
     private static final long WAIT_BEFORE_RESTART = 100; // ms
 
+    public static final String KEY_LAUNCHER_INITIALIZED = "pref_launcher_initialized";
     public static final String DESKTOP_SHOW_QUICKSPACE = "pref_show_quickspace";
     public static final String KEY_SHOW_QUICKSPACE_NOWPLAYING = "pref_quickspace_np";
     public static final String KEY_SHOW_QUICKSPACE_NOWPLAYING_SHOWDATE = "pref_quickspace_np_showdate";
@@ -1146,6 +1147,16 @@ public final class Utilities {
     public static boolean isQuickspacePersonalityEnabled(Context context) {
         SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
         return prefs.getBoolean(KEY_SHOW_QUICKSPACE_PSONALITY, true);
+    }
+
+    public static void setInitTimestamp(Context context, long time) {
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
+        prefs.edit().putLong(KEY_LAUNCHER_INITIALIZED, time).apply();
+    }
+
+    public static long getInitTimestamp(Context context) {
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
+        return prefs.getLong(KEY_LAUNCHER_INITIALIZED, 0);
     }
 
     public static boolean canZoomWallpaper(Context context) {

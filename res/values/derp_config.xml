@@ -35,4 +35,7 @@
 
     <!-- Quickspace -->
     <item type="id" name="reserved_container_workspace" />
+
+    <!-- Quickspace: Device intro timeout (in minutes) -->
+    <integer name="config_quickSpaceIntroTimeout">15</integer>
 </resources>
