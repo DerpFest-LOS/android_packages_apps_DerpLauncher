@@ -622,6 +622,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         setTitle(R.string.home_screen);
         mStartupLatencyLogger.logEnd(LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE);
 
+        if (Utilities.getInitTimestamp(this) == 0) {
+            Utilities.setInitTimestamp(this, System.currentTimeMillis());
+        }
+
         if (BuildCompat.isAtLeastV()
                 && com.android.launcher3.Flags.enableTwoPaneLauncherSettings()) {
             RuleController.getInstance(this).setRules(
