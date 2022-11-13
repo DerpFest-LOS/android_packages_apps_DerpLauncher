@@ -1,13 +1,13 @@
 package com.android.launcher3.icons;
 
-import android.content.Context;
-import android.content.pm.LauncherActivityInfo;
-import android.graphics.drawable.Drawable;
-
 import android.annotation.SuppressLint;
-import com.android.launcher3.util.ComponentKey;
+import android.content.Context;
+import android.content.pm.ComponentInfo;
+import android.graphics.drawable.Drawable;
+import android.os.UserHandle;
 
 import com.android.launcher3.icons.pack.IconResolver;
+import com.android.launcher3.util.ComponentKey;
 
 import static com.android.launcher3.icons.BaseIconFactory.CONFIG_HINT_NO_WRAP;
 
@@ -22,12 +22,12 @@ public class ThirdPartyIconProvider extends LauncherIconProvider {
 
     @SuppressLint("WrongConstant")
     @Override
-    public Drawable getIcon(LauncherActivityInfo launcherActivityInfo, int iconDpi) {
+    public Drawable getIcon(ComponentInfo info, int iconDpi) {
         ComponentKey key = new ComponentKey(
-                launcherActivityInfo.getComponentName(), launcherActivityInfo.getUser());
+                info.getComponentName(), UserHandle.getUserHandleForUid(info.applicationInfo.uid));
 
         IconResolver.DefaultDrawableProvider fallback =
-                () -> super.getIcon(launcherActivityInfo, iconDpi);
+                () -> super.getIcon(info, iconDpi);
         Drawable icon = ThirdPartyIconUtils.getByKey(mContext, key, iconDpi, fallback);
 
         if (icon == null) {
