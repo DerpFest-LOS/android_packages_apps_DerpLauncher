@@ -151,6 +151,7 @@ import android.view.WindowInsetsAnimation;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
@@ -423,6 +424,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     private final SettingsCache.OnChangeListener mNaturalScrollingChangedListener =
             enabled -> mIsNaturalScrollingEnabled = enabled;
 
+    private InputMethodManager mInputMethodManager;
+
     public static Launcher getLauncher(Context context) {
         return fromContext(context);
     }
@@ -605,6 +608,9 @@ public class Launcher extends StatefulActivity<LauncherState>
                     RuleController.parseRules(this, R.xml.split_configuration));
         }
         TestEventEmitter.INSTANCE.get(this).sendEvent(TestEvent.LAUNCHER_ON_CREATE);
+
+        mInputMethodManager = (InputMethodManager) mWorkspace.getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE); 
     }
 
     protected ModelCallbacks createModelCallbacks() {
@@ -2921,7 +2927,11 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param progress Transition progress from 0 to 1; where 0 => home and 1 => all apps.
      */
     public void onAllAppsTransition(float progress) {
-        // No-Op
+        if (progress > 0) return;
+        if (mAppsView == null) return;
+        if (mInputMethodManager == null) return;
+        // make sure the keyboard is hidden when the AllApps view is closed
+        mInputMethodManager.hideSoftInputFromWindow(mAppsView.getWindowToken(), 0);
     }
 
     /**
