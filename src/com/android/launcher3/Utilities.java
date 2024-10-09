@@ -26,6 +26,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MA
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.app.contextualsearch.ContextualSearchManager;
 import android.app.KeyguardManager;
 import android.app.Person;
 import android.app.WallpaperManager;
@@ -59,6 +60,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.TransactionTooLargeException;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -1112,5 +1114,24 @@ public final class Utilities {
     public static boolean enableAutoIme(Context context) {
         SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
         return prefs.getBoolean(KEY_AUTO_KEYABORD, false);
+    }
+
+    public static boolean startContextualSearch(Context context, int entrypoint) {
+        Context appContext = context.getApplicationContext();
+        ContextualSearchManager contextualSearchManager = 
+            (ContextualSearchManager) appContext.getSystemService(Context.CONTEXTUAL_SEARCH_SERVICE);
+        if (contextualSearchManager == null) {
+            return false;
+        }
+        try {
+            contextualSearchManager.startContextualSearch(entrypoint);
+            return true;
+        } catch (Exception e) {}
+        return false;
+    }
+    
+    public static boolean isLongPressSearchEnabled(Context context) {
+        return Settings.Secure.getInt(
+            context.getApplicationContext().getContentResolver(), "search_press_hold_nav_handle_enabled", 1) == 1;
     }
 }
