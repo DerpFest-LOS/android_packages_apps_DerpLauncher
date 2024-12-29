@@ -570,9 +570,7 @@ android_app {
     name: "DerpLauncherQuickStep",
     static_libs: ["Launcher3QuickStepLib"],
     optimize: {
-        proguard_flags_files: [":launcher-proguard-rules"],
-        enabled: true,
-        shrink_resources: true,
+        enabled: false,
     },
 
     platform_apis: true,
@@ -622,9 +620,7 @@ android_app {
     target_sdk_version: "current",
 
     optimize: {
-        proguard_flags_files: ["proguard.flags"],
-        enabled: true,
-        shrink_resources: true,
+        enabled: false,
     },
 
     certificate: "platform",
@@ -664,7 +660,6 @@ android_app {
     optimize: {
         proguard_flags_files: ["proguard.flags"],
         enabled: true,
-        shrink_resources: true,
     },
 
     certificate: "platform",
