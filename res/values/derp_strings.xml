@@ -153,6 +153,7 @@
     <string name="recents_screenshot_title">Screenshot</string>
     <string name="recents_clear_all_title">Clear all</string>
     <string name="recents_lens_title">Lens</string>
+    <string name="recents_split_screen_title">Split screen</string>
 
     <!-- Memory info -->
     <string name="meminfo_text">%1$s available | %2$s</string>
