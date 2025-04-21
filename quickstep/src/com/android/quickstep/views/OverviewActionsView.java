@@ -123,6 +123,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final String KEY_RECENTS_SCREENSHOT = "pref_recents_screenshot";
     private static final String KEY_RECENTS_CLEAR_ALL = "pref_recents_clear_all";
     private static final String KEY_RECENTS_LENS = "pref_recents_lens";
+    private static final String KEY_RECENTS_SPLIT_SCREEN = "pref_recents_split_screen";
 
     /** Container for the action buttons below a focused, non-split Overview tile. */
     protected LinearLayout mActionButtons;
@@ -155,6 +156,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private boolean mScreenshot;
     private boolean mClearAll;
     private boolean mLens;
+    private boolean mSplitScreenEnabled;
 
     public OverviewActionsView(Context context) {
         this(context, null);
@@ -171,6 +173,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mScreenshot = prefs.getBoolean(KEY_RECENTS_SCREENSHOT, true);
         mClearAll = prefs.getBoolean(KEY_RECENTS_CLEAR_ALL, true);
         mLens = prefs.getBoolean(KEY_RECENTS_LENS, false);
+        mSplitScreenEnabled = prefs.getBoolean(KEY_RECENTS_SPLIT_SCREEN, false);
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -182,6 +185,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         // Currently, the only grouped task action is "save app pairs".
         mActionButtons = findViewById(R.id.action_buttons);
         mSaveAppPairButton = findViewById(R.id.action_save_app_pair);
+        mSplitButton = findViewById(R.id.action_split);
         // Initialize a list to hold alphas for mActionButtons and any group action buttons.
         mMultiValueAlphas[ACTIONS_ALPHAS] = new MultiValueAlpha(mActionButtons, NUM_ALPHAS);
         mMultiValueAlphas[GROUP_ACTIONS_ALPHAS] =
@@ -241,6 +245,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         mSplitButton = findViewById(mUseChips ? R.id.action2_split : R.id.action_split);
         mSplitButton.setOnClickListener(this);
+        mSplitButton.setVisibility(mSplitScreenEnabled ? VISIBLE : GONE);
+        findViewById(R.id.action_split_space).setVisibility(mUseChips && mSplitScreenEnabled ? VISIBLE : GONE);
     }
 
     /**
@@ -297,6 +303,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mClearAll = prefs.getBoolean(KEY_RECENTS_CLEAR_ALL, true);
         } else if (key.equals(KEY_RECENTS_LENS)) {
             mLens = prefs.getBoolean(KEY_RECENTS_LENS, false);
+        } else if (key.equals(KEY_RECENTS_SPLIT_SCREEN)) {
+            mSplitScreenEnabled = prefs.getBoolean(KEY_RECENTS_SPLIT_SCREEN, false);
         }
         updateVisibilities();
     }
@@ -396,7 +404,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         } else {
             mSplitButtonHiddenFlags &= ~flag;
         }
-        int desiredVisibility = mSplitButtonHiddenFlags == 0 ? VISIBLE : GONE;
+        int desiredVisibility = (mSplitButtonHiddenFlags == 0 && mSplitScreenEnabled) ? VISIBLE : GONE;
         if (mSplitButton.getVisibility() != desiredVisibility) {
             mSplitButton.setVisibility(desiredVisibility);
             findViewById(R.id.action_split_space).setVisibility(
