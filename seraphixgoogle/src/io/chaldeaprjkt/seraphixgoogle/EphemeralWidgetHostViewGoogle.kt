@@ -16,7 +16,9 @@
 package io.chaldeaprjkt.seraphixgoogle
 
 import android.appwidget.AppWidgetHostView
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
@@ -34,11 +36,21 @@ class EphemeralWidgetHostViewGoogle(context: Context?) : AppWidgetHostView(conte
         allChildren().forEach {
             when (it) {
                 is ImageView -> it.takeByName<ImageView>(VID_WEATHER_ICON)
-                    ?.let { x -> weather.image = x.bitmap }
+                    ?.let { x -> weather.image = x.bitmap() }
                 is TextView -> it.takeByName<TextView>(VID_WEATHER_TEXT)
-                    ?.let { x -> weather.text = x.string }
+                    ?.let { x -> weather.text = x.string() }
             }
         }
+        // Set card type and expiry
+        weather.cardType = Card.TYPE_WEATHER
+        weather.expiryTimeMillis = System.currentTimeMillis() + 30 * 60 * 1000 // 30 minutes
+        
+        // Add weather intent
+        weather.intent = Intent().apply {
+            component = WEATHER_COMPONENT
+        }
+        weather.tapAction = weather.intent // Set tap action to open weather
+        
         listener?.onDataUpdated(weather)
     }
 
@@ -50,5 +62,8 @@ class EphemeralWidgetHostViewGoogle(context: Context?) : AppWidgetHostView(conte
     companion object {
         const val VID_WEATHER_TEXT = "title_weather_text"
         const val VID_WEATHER_ICON = "title_weather_icon"
+        private const val GSA_PACKAGE = "com.google.android.googlequicksearchbox"
+        private const val GSA_WEATHER = "com.google.android.apps.search.weather.WeatherExportedActivity"
+        private val WEATHER_COMPONENT = ComponentName(GSA_PACKAGE, GSA_WEATHER)
     }
 }

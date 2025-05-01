@@ -16,5 +16,6 @@
 package io.chaldeaprjkt.seraphixgoogle
 
 interface DataProviderListener {
-    fun onDataUpdated(chip: Card)
+    fun onDataUpdated(card: Card)
+    fun onCardExpired(card: Card)
 }

@@ -15,6 +15,24 @@
  */
 package io.chaldeaprjkt.seraphixgoogle
 
+import android.content.Intent
 import android.graphics.Bitmap
 
-data class Card(var text: String? = null, var image: Bitmap? = null)
+data class Card(
+    var text: String? = null,
+    var image: Bitmap? = null,
+    var intent: Intent? = null,
+    var expiryTimeMillis: Long = 0L,
+    var cardType: Int = 0,
+    var tapAction: Intent? = null
+) {
+    companion object {
+        const val TYPE_WEATHER = 1
+        const val TYPE_CALENDAR = 2
+        const val TYPE_ALARM = 3
+        const val TYPE_COMMUTE = 4
+        const val TYPE_FLIGHT = 5
+        const val TYPE_PACKAGE = 6
+        const val TYPE_AT_A_GLANCE = 7
+    }
+}

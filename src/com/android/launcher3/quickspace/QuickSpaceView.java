@@ -17,6 +17,7 @@ package com.android.launcher3.quickspace;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
@@ -50,6 +51,9 @@ public class QuickSpaceView extends FrameLayout implements OnDataListener {
     private ViewGroup mWeatherContainer;
     private ImageView mWeatherIcon;
     private TextView mWeatherTemp;
+
+    private String mWeatherText;
+    private Bitmap mWeatherIconBitmap;
 
     private boolean mIsQuickEvent;
     private boolean mFinishedInflate;
@@ -173,11 +177,33 @@ public class QuickSpaceView extends FrameLayout implements OnDataListener {
         mController.onResume();
     }
 
+    private void updateWeather() {
+        if (mWeatherText != null && mWeatherIconBitmap != null) {
+            mWeatherTemp.setText(mWeatherText);
+            mWeatherIcon.setImageBitmap(mWeatherIconBitmap);
+            mWeatherContainer.setVisibility(View.VISIBLE);
+        } else {
+            mWeatherContainer.setVisibility(View.GONE);
+        }
+    }
+
     private final DataProviderListener mDataProviderListener = new DataProviderListener() {
         @Override
-        public void onDataUpdated(@NonNull Card card) {
-            if (mController == null) return;
-            mController.updateWeatherData(card.getText(), card.getImage());
+        public void onDataUpdated(Card card) {
+            if (card.getCardType() == Card.TYPE_WEATHER) {
+                mWeatherText = card.getText();
+                mWeatherIconBitmap = card.getImage();
+                updateWeather();
+            }
+        }
+
+        @Override
+        public void onCardExpired(Card card) {
+            if (card.getCardType() == Card.TYPE_WEATHER) {
+                mWeatherText = null;
+                mWeatherIconBitmap = null;
+                updateWeather();
+            }
         }
     };
 

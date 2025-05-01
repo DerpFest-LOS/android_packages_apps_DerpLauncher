@@ -18,6 +18,7 @@ package io.chaldeaprjkt.seraphixgoogle
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import io.chaldeaprjkt.seraphixgoogle.SeraphixCompanion.isPackageEnabled
 
@@ -38,7 +39,22 @@ class SeraphixDataProvider(
     private var isWidgetBound = false
 
     fun setOnDataUpdated(listener: DataProviderListener? = null): SeraphixDataProvider {
-        widgetHost.setOnDataUpdated(listener)
+        widgetHost.setOnDataUpdated(object : DataProviderListener {
+            override fun onDataUpdated(card: Card) {
+                listener?.onDataUpdated(card)
+                // Broadcast weather updates for Quickspace
+                if (card.cardType == Card.TYPE_WEATHER) {
+                    context.sendBroadcast(Intent(WEATHER_UPDATE).apply {
+                        putExtra(EXTRA_WEATHER_TEXT, card.text)
+                        putExtra(EXTRA_WEATHER_ICON, card.image)
+                    })
+                }
+            }
+
+            override fun onCardExpired(card: Card) {
+                listener?.onCardExpired(card)
+            }
+        })
         return this
     }
 
@@ -80,5 +96,10 @@ class SeraphixDataProvider(
         const val SMARTSPACE_PROVIDER =
             "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
         const val QSB_PACKAGE = "com.google.android.googlequicksearchbox"
+        
+        // Broadcast constants for Quickspace integration
+        const val WEATHER_UPDATE = "io.chaldeaprjkt.seraphixgoogle.WEATHER_UPDATE"
+        const val EXTRA_WEATHER_TEXT = "weather_text"
+        const val EXTRA_WEATHER_ICON = "weather_icon"
     }
 }
