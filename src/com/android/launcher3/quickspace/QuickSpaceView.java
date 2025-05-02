@@ -179,17 +179,23 @@ public class QuickSpaceView extends FrameLayout implements OnDataListener {
 
     private void updateWeather() {
         if (mWeatherText != null && mWeatherIconBitmap != null) {
-            mWeatherTemp.setText(mWeatherText);
-            mWeatherIcon.setImageBitmap(mWeatherIconBitmap);
+            android.util.Log.d(TAG, "Updating weather: " + mWeatherText);
+            mController.updateWeatherData(mWeatherText, mWeatherIconBitmap);
             mWeatherContainer.setVisibility(View.VISIBLE);
+            mWeatherAvailable = true;
+            loadWeather();
         } else {
+            android.util.Log.d(TAG, "Weather data is null, hiding container");
+            mController.updateWeatherData(null, null);
             mWeatherContainer.setVisibility(View.GONE);
+            mWeatherAvailable = false;
         }
     }
 
     private final DataProviderListener mDataProviderListener = new DataProviderListener() {
         @Override
         public void onDataUpdated(Card card) {
+            android.util.Log.d(TAG, "Weather data updated: " + card.getText());
             if (card.getCardType() == Card.TYPE_WEATHER) {
                 mWeatherText = card.getText();
                 mWeatherIconBitmap = card.getImage();
@@ -199,6 +205,7 @@ public class QuickSpaceView extends FrameLayout implements OnDataListener {
 
         @Override
         public void onCardExpired(Card card) {
+            android.util.Log.d(TAG, "Weather card expired");
             if (card.getCardType() == Card.TYPE_WEATHER) {
                 mWeatherText = null;
                 mWeatherIconBitmap = null;

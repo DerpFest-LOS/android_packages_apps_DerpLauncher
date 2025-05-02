@@ -15,7 +15,10 @@
  */
 package com.android.launcher3.quickspace;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -74,6 +77,18 @@ public class QuickspaceController implements NotificationListener.NotificationsC
     }
 
     private void addWeatherProvider() {
+        // Weather updates are now handled by Seraphix
+        IntentFilter filter = new IntentFilter(SeraphixDataProvider.WEATHER_UPDATE);
+        mContext.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (SeraphixDataProvider.WEATHER_UPDATE.equals(intent.getAction())) {
+                    String text = intent.getStringExtra(SeraphixDataProvider.EXTRA_WEATHER_TEXT);
+                    Bitmap icon = intent.getParcelableExtra(SeraphixDataProvider.EXTRA_WEATHER_ICON);
+                    updateWeatherData(text, icon);
+                }
+            }
+        }, filter);
     }
 
     public void addListener(OnDataListener listener) {
@@ -190,9 +205,10 @@ public class QuickspaceController implements NotificationListener.NotificationsC
 
     private void updateWeather() {
         try {
+            if (DEBUG) Log.d(TAG, "Updating weather: " + weatherText);
             notifyListeners();
         } catch(Exception e) {
-            // Do nothing
+            if (DEBUG) Log.e(TAG, "Error updating weather", e);
         }
     }
 
@@ -208,6 +224,7 @@ public class QuickspaceController implements NotificationListener.NotificationsC
     }
 
     public void updateWeatherData(String text, Bitmap image) {
+        if (DEBUG) Log.d(TAG, "Weather data updated: " + text);
         weatherText = text;
         weatherIcon = image == null ? null : Icon.createWithBitmap(image);
         updateWeather();
