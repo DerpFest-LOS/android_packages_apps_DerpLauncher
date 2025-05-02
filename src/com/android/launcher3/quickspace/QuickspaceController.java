@@ -90,7 +90,7 @@ public class QuickspaceController implements NotificationListener.NotificationsC
                     updateWeatherData(text, icon);
                 }
             }
-        }, filter);
+        }, filter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     public void addListener(OnDataListener listener) {
