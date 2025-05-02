@@ -37,6 +37,8 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.PackageUserKey;
 
+import io.chaldeaprjkt.seraphixgoogle.SeraphixDataProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 
